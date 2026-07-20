@@ -2,8 +2,8 @@
 ## Title: Incognito Resurrected
 ## Notes: Adds your name to chat messages
 
-## Author: info@starlynk.net
-## Version: 1.4.5
+## Author: info@starlynk.net, Tharavol, Claude
+## Version: 1.4.6
 ## SavedVariables: IncognitoResurrectedDB
 ## OptionalDeps: Ace3
 

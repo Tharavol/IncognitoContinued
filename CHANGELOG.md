@@ -6,3 +6,4 @@
 - Merge pull request #50 from Starlynk1/bugfix/slash-command-errors  
     Fix for slash commands, return before SendChatMessage  
 - Fix for slash commands, return before SendChatMessage  
+- Sync .toc Version to 1.4.6 and add Tharavol and Claude to the Author list  
