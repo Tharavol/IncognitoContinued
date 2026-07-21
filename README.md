@@ -2,6 +2,8 @@
 # Incognito Resurrected
 #### Incognito adds your specified name in front of your chat messages. Incongito Resurrrected can be enabled for guild (and officer), party and raid chat messages.
 
+Supports modern (Retail) World of Warcraft only. Classic and other legacy versions are not supported.
+
 ## Example
 <pre><code>[Guild] [Yourchar]: Some chat message </code></pre>
 becomes  
@@ -22,13 +24,11 @@ slash options**
 - Party - Add name to party chat messages
 - Raid - Add name to raid chat messages
 - LFR - Add name to LFR specific instance messsages
-    (Option disabled for Classic Era)
 - World - Add name to world chat messages, e.g., General, Trade, LocalDefense and Services  
     (This is an all or none option, you cannot select which World Channel to enable/disable)
 - Channel - Add name to chat messages in a custom channel  
     (Use comma-separation to add multiple channels)
 - Community - Add name to chat messages in the Community channels.  
-    (Option disabled for Classic)
 - Debug - Enable debugging messages output. You probably don't want to enable this 
 
 ## Known Issues

@@ -1,5 +1,14 @@
 # Incognito Resurrected
 
+## [v1.5.0](https://github.com/Tharavol/IncognitoResurrected/tree/v1.5.0) (2026-07-20)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.4.7...v1.5.0) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+- Drop support for Classic/Classic Era/other legacy WoW versions; addon now targets modern (Retail) WoW only  
+    Removed ClassicAPI.lua and the Classic/Retail API-detection branching; RetailAPI.lua's hooks merged directly into IncognitoResurrected.lua  
+    Removed the LFR/Community option visibility gating that only existed to hide those features on Classic  
+- Trim .toc Interface line to Retail-only versions  
+- Sync .toc Version to 1.5.0  
+
 ## [v1.4.7](https://github.com/Tharavol/IncognitoResurrected/tree/v1.4.7) (2026-07-20)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.4.6...v1.4.7) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
 
