@@ -32,6 +32,15 @@ function IncognitoResurrected:SendChatMessage(msg, chatType, language, target)
         return
     end
 
+    -- Early out: skip prefixing while in combat. Touching any protected state
+    -- (even just modifying msg here) before calling through to the real,
+    -- hooked SendChatMessage taints that call and gets it blocked by the
+    -- client ("ADDON_ACTION_BLOCKED") while in combat/instances.
+    if InCombatLockdown() then
+        self.hooks.SendChatMessage(msg, chatType, language, target)
+        return
+    end
+
     -- Early out: ignore messages starting with configured symbols (after spaces)
     if self.db and self.db.profile and self.db.profile.enable and type(msg) ==
         "string" then
