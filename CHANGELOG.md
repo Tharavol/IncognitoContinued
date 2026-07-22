@@ -1,5 +1,12 @@
 # Incognito Resurrected
 
+## [v1.5.1](https://github.com/Tharavol/IncognitoResurrected/tree/v1.5.1) (2026-07-21)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.5.0...v1.5.1) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+- Fix "ADDON_ACTION_BLOCKED" error still occurring when sending chat in combat  
+    The v1.4.7 fix skipped prefixing in combat but still called through the hook body, which was not enough: the client blocks any call routed through an addon-replaced protected function while in combat, regardless of what that function does. Now the SendChatMessage/SendMessage hooks are fully unhooked on PLAYER_REGEN_DISABLED and reinstalled on PLAYER_REGEN_ENABLED, so the protected functions are untouched by the addon for the duration of combat  
+- Sync .toc Version to 1.5.1  
+
 ## [v1.5.0](https://github.com/Tharavol/IncognitoResurrected/tree/v1.5.0) (2026-07-20)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.4.7...v1.5.0) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
 

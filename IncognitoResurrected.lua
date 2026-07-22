@@ -1,4 +1,4 @@
---  Version: 1.5.0
+--  Version: 1.5.1
 IncognitoResurrected = LibStub("AceAddon-3.0"):NewAddon("IncognitoResurrected",
                                                         "AceConsole-3.0",
                                                         "AceEvent-3.0",
@@ -337,6 +337,13 @@ function IncognitoResurrected:OnInitialize()
         self:SetupHooks()
     end
 
+    -- The client blocks any call that passes through an addon-replaced
+    -- protected function while in combat, even if the replacement just
+    -- calls straight through to the original. So instead of trying to be
+    -- clever inside the hook, remove the hook entirely for the duration of
+    -- combat and restore it once combat ends.
+    self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnCombatStart")
+
     self:Safe_Print(L["Loaded"])
 end
 
@@ -350,6 +357,22 @@ function IncognitoResurrected:SetupHooks()
         self:RawHook(C_Club, "SendMessage", true)
     end
     self._hooksInstalled = true
+end
+
+function IncognitoResurrected:OnCombatStart()
+    -- Unhook so the protected functions are untouched while in combat;
+    -- leaving the hook in place causes ADDON_ACTION_BLOCKED even though the
+    -- hook body itself never touches protected state.
+    if self._hooksInstalled then
+        if self:IsHooked(C_ChatInfo, "SendChatMessage") then
+            self:Unhook(C_ChatInfo, "SendChatMessage")
+        end
+        if type(C_Club) == "table" and self:IsHooked(C_Club, "SendMessage") then
+            self:Unhook(C_Club, "SendMessage")
+        end
+        self._hooksInstalled = false
+    end
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd")
 end
 
 function IncognitoResurrected:OnCombatEnd()
