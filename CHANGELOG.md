@@ -1,5 +1,34 @@
 # Incognito Resurrected
 
+## [v1.7.0](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.0) (2026-07-26)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.6.1...v1.7.0) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+### Fixed
+- Fix the LFR option adding your name to unrelated chat. The `lfr` branch had no chat-type guard, so with LFR enabled and Instance disabled, standing in an LFR raid prefixed whispers, /say, /yell and emotes as well. LFR now only affects `INSTANCE_CHAT`, which is what LFR chat actually is
+- Fix a duplicated custom channel name producing a duplicated prefix. The comma-separated channel list was iterated without stopping on the first match, so `Trade,Trade` prefixed twice. Channel lookup also no longer runs once per list entry
+- Stop clobbering AceEvent-3.0's `SendMessage`. AceHook defaults its handler to the hooked method's name, so the `C_Club.SendMessage` hook was defined as `IncognitoResurrected:SendMessage`, overwriting the message-bus method AceAddon had embedded. The hooks now use explicit handler names (`OnSendChatMessage`, `OnClubSendMessage`)
+- Add `CHAT_MSG_COMMUNITIES_CHANNEL` to the class-color chat filter, so community messages are colored like every other channel the addon supports
+- Never let the name prefix silently truncate a message. Chat is capped at 255 characters; if the prefix would push a message past the cap it is now sent unprefixed with a notice, instead of losing the tail
+- Fix the incoming-prefix pattern accepting a stray `)` inside the name
+
+### Changed
+- Remove the addon's override of the global `InterfaceOptionsFrame_OpenToCategory`. It was unused dead code, its parameter shadowed the addon's own global, and because Blizzard removed the function from modern Retail the override silently intercepted calls made by *other* addons
+- Make `IsInLFR` a local instead of a global
+- Register slash commands through AceConsole instead of writing `SLASH_*` and `SlashCmdList` by hand, so `/inc` no longer clobbers another addon that claims the same command
+- Derive hook state from `IsHooked` rather than a private flag, so the combat unhook/rehook cycle stays correct if anything else calls `UnhookAll`
+- Debug output now takes a format string and its arguments, so no message strings are built while debug mode is off
+- Print a one-time hint pointing at `/inc` when no name has been configured yet, rather than starting up silently
+- Ship US English only; the deDE, esES and ruRU locales have been removed. deDE was already missing the `bracketStyle` and `ignoreLeadingSymbols` strings
+- Move every remaining hard-coded English string into the locale file, including the "Color name by class" option and the option group headers
+- Add `IconTexture`, `Category-enUS`, `X-License`, `X-Website` and `AddonCompartmentFunc` to the .toc; the addon now has a minimap compartment button that opens the config
+
+### Internal
+- Split the 680-line `IncognitoResurrected.lua` into `Logic.lua` (pure helpers), `Core.lua` (addon object, hooks, combat), `Options.lua` (AceConfig tables) and `ChatFilter.lua` (class-color rendering)
+- Deduplicate the name-matching logic that was written out twice, once in each of the two send paths
+- Hoist the bracket-style table to file scope and stop shadowing the `pairs` builtin with it
+- Add a busted suite under `Tests/` covering everything in `Logic.lua`, and a GitHub Actions workflow running luacheck and busted on every push and pull request
+- Add `.pkgmeta` and a release workflow so tagging `v*` builds the release zip with the BigWigs packager
+
 ## [v1.6.1](https://github.com/Tharavol/IncognitoResurrected/tree/v1.6.1) (2026-07-26)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.5.1...v1.6.1) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
 

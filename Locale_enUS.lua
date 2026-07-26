@@ -1,10 +1,15 @@
--- Version 1.4.5
+-- US English is the only locale this addon ships.
 local L = LibStub("AceLocale-3.0"):NewLocale("IncognitoResurrected", "enUS",
                                              true)
 
 if not L then return end
 
-L["Loaded"] = "Loaded."
+L["loaded"] = "Loaded (v%s)."
+L["version"] = "Version: %s"
+
+L["generalSettings"] = "General Settings"
+L["options"] = "Options"
+L["profiles"] = "Profiles"
 
 L["name"] = "Name"
 L["name_desc"] = "The name that should be displayed in your chat messages."
@@ -34,10 +39,6 @@ L["world_chat"] = "World Chat"
 L["world_chat_desc"] =
     "Add name to world chat messages, e.g., General, Trade, LocalDefense and Services.\n-- This is an all or none option, you cannot select which World Channel to enable/disable"
 
-L["world_chat_info"] = "World Chat"
-L["world_chat_info_desc"] =
-    "Add name to world chat messages, e.g., General, Trade, LocalDefense and Services.\n-- This is an all or none option, you cannot select which World Channel to enable/disable"
-
 L["config"] = "Configuration"
 L["config_desc"] = "Open configuration window."
 
@@ -47,14 +48,14 @@ L["debug_desc"] =
 
 L["channel"] = "Channel"
 L["channel_desc"] =
-    "Add name to chat messages in this custom channel. Use comma to seperate channel names."
+    "Add name to chat messages in this custom channel. Use comma to separate channel names."
 
 L["community"] = "Community"
 L["community_desc"] = "Add name to chat messages in the Community channels."
 
 L["hideOnMatchingCharName"] = "Hide name if it matches your character's name"
 L["hideOnMatchingCharName_desc"] =
-    "If the name specified above matches your current character's name, IncognitoResurrected will not add it again if this option is checked."
+    "If the name specified above matches your current character's name, Incognito Resurrected will not add it again if this option is checked."
 
 L["channel_info_text"] =
     "Say channel is not an option. This is a limitation within the Blizzard API."
@@ -68,6 +69,14 @@ L["ignoreLeadingSymbols_desc"] =
 L["bracketStyle"] = "Bracket style"
 L["bracketStyle_desc"] =
     "Choose which brackets to surround your name with in chat messages."
+L["bracketStyle_paren"] = "(round)"
+L["bracketStyle_square"] = "[square]"
+L["bracketStyle_curly"] = "{curly}"
+L["bracketStyle_angle"] = "<angle>"
+
+L["colorizePrefix"] = "Color name by class"
+L["colorizePrefix_desc"] =
+    "Color the Incognito name with the sender's class color. This only changes how messages look to you; it does not alter what you send."
 
 L["partialMatchMode"] = "Partial match"
 L["partialMatchMode_desc"] =
@@ -76,3 +85,21 @@ L["partialMatchMode_disabled"] = "Disabled"
 L["partialMatchMode_start"] = "Start of name"
 L["partialMatchMode_anywhere"] = "Anywhere"
 L["partialMatchMode_end"] = "End of name"
+
+L["help_header"] = "Available commands:"
+L["help_config"] = "/inc - Open configuration"
+L["help_enable"] = "/inc enable - Toggle addon on/off"
+L["help_name"] = "/inc name <name> - Set display name"
+L["help_debug"] = "/inc debug - Toggle debug mode"
+L["help_help"] = "/inc help - Show this help"
+L["help"] = "Help"
+L["help_desc"] = "Show available commands"
+
+L["msg_too_long"] =
+    "Message too long to fit your name prefix; sent without it."
+
+L["first_run_hint"] =
+    "No name configured yet, so nothing will be added to your chat. Type /inc to set one."
+
+L["status_text"] =
+    "Incognito Resurrected | https://www.curseforge.com/wow/addons/incognito-resurrected"

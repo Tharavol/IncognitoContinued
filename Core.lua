@@ -1,0 +1,323 @@
+--[[
+Core.lua - Addon object, saved variables, chat hooks and combat handling.
+]] --
+local addonName, ns = ...
+
+local L = LibStub("AceLocale-3.0"):GetLocale("IncognitoResurrected", true)
+local Logic = ns.Logic
+
+local format = string.format
+
+--- Global addon object. Kept as a global for backwards compatibility with
+--- macros and other addons that look it up by name.
+IncognitoResurrected = LibStub("AceAddon-3.0"):NewAddon(addonName,
+                                                        "AceConsole-3.0",
+                                                        "AceEvent-3.0",
+                                                        "AceHook-3.0")
+
+local addon = IncognitoResurrected
+ns.addon = addon
+ns.version = C_AddOns.GetAddOnMetadata(addonName, "Version")
+
+ns.defaults = {
+    global = {firstRunHintShown = false},
+    profile = {
+        enable = true,
+        guild = true,
+        party = false,
+        raid = false,
+        lfr = false,
+        instance_chat = false,
+        world_chat = false,
+        debug = false,
+        channel = nil,
+        community = false,
+        hideOnMatchingCharName = true,
+        partialMatchMode = "disabled",
+        -- Leading characters that suppress the prefix entirely
+        ignoreLeadingSymbols = "/!#@?",
+        bracketStyle = "paren",
+        -- Class-color the bracketed prefix in chat frames (display only)
+        colorizePrefix = true
+    }
+}
+
+local SLASH_COMMANDS = {"inc", "incognito", "incognitoresurrected"}
+
+-- LFR raids report the "raid" instance type with difficulty 17.
+local function IsInLFR()
+    local _, instanceType, difficultyID = GetInstanceInfo()
+    return instanceType == "raid" and difficultyID == 17
+end
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+--- Print only when debug output is enabled. Takes a format string so callers
+--- do not pay for string concatenation when debugging is off.
+function addon:Debug(fmt, ...)
+    if not (self.db and self.db.profile and self.db.profile.debug) then
+        return
+    end
+    if select("#", ...) > 0 then
+        self:Print(format(fmt, ...))
+    else
+        self:Print(fmt)
+    end
+end
+
+function addon:GetNamePrefix()
+    local profile = self.db.profile
+    return Logic.BuildPrefix(profile.name, profile.bracketStyle)
+end
+
+--- Prepend the name prefix unless doing so would overflow the chat limit.
+function addon:ApplyPrefix(msg)
+    local prefix = self:GetNamePrefix()
+    if not Logic.FitsInChatMessage(prefix, msg) then
+        self:Print(L["msg_too_long"])
+        return msg
+    end
+    return prefix .. msg
+end
+
+--- Whether the configured name should be shown at all, independent of channel.
+function addon:ShouldAddPrefix()
+    local profile = self.db.profile
+    if not profile.name or profile.name == "" then return false end
+    if profile.hideOnMatchingCharName and
+        Logic.NameMatchesCharacter(profile.name, self.character_name,
+                                   profile.partialMatchMode) then
+        return false
+    end
+    return true
+end
+
+--- Whether this particular chat type is one the user opted into.
+function addon:WantsPrefixFor(chatType, target)
+    local profile = self.db.profile
+
+    if chatType == "GUILD" or chatType == "OFFICER" then
+        return profile.guild == true
+    elseif chatType == "RAID" then
+        return profile.raid == true
+    elseif chatType == "PARTY" then
+        return profile.party == true
+    elseif chatType == "INSTANCE_CHAT" then
+        if profile.instance_chat then return true end
+        return profile.lfr == true and IsInLFR()
+    elseif chatType == "CHANNEL" then
+        if profile.world_chat then return true end
+        if profile.channel and profile.channel ~= "" then
+            local _, channelName = GetChannelName(target)
+            return Logic.ChannelListMatches(profile.channel, channelName)
+        end
+        return false
+    end
+
+    return false
+end
+
+--------------------------------------------------------------------------------
+-- Hooks
+--------------------------------------------------------------------------------
+
+--- Install the chat hooks. Safe to call repeatedly; no-ops in combat.
+function addon:SetupHooks()
+    if InCombatLockdown() then return end
+
+    if not self:IsHooked(C_ChatInfo, "SendChatMessage") then
+        self:RawHook(C_ChatInfo, "SendChatMessage", "OnSendChatMessage", true)
+    end
+
+    if type(C_Club) == "table" and type(C_Club.SendMessage) == "function" and
+        not self:IsHooked(C_Club, "SendMessage") then
+        self:RawHook(C_Club, "SendMessage", "OnClubSendMessage", true)
+    end
+end
+
+function addon:RemoveHooks()
+    if self:IsHooked(C_ChatInfo, "SendChatMessage") then
+        self:Unhook(C_ChatInfo, "SendChatMessage")
+    end
+    if type(C_Club) == "table" and self:IsHooked(C_Club, "SendMessage") then
+        self:Unhook(C_Club, "SendMessage")
+    end
+end
+
+-- The client blocks any call that passes through an addon-replaced protected
+-- function while in combat, even when the replacement just calls straight
+-- through to the original. So rather than trying to be clever inside the hook,
+-- remove the hooks entirely for the duration of combat.
+function addon:OnCombatStart() self:RemoveHooks() end
+
+function addon:OnCombatEnd() self:SetupHooks() end
+
+function addon:OnSendChatMessage(msg, chatType, language, target)
+    local original = self.hooks[C_ChatInfo].SendChatMessage
+    local profile = self.db and self.db.profile
+
+    -- Bail out early for anything we must not touch: combat (see above),
+    -- the addon being disabled, slash commands with no chat type, and
+    -- messages the user marked as off-limits with a leading symbol.
+    if not profile or not profile.enable or InCombatLockdown() then
+        return original(msg, chatType, language, target)
+    end
+    if not chatType or chatType == "" or type(msg) ~= "string" then
+        return original(msg, chatType, language, target)
+    end
+    if Logic.HasIgnoredLeadingSymbol(msg, profile.ignoreLeadingSymbols) then
+        return original(msg, chatType, language, target)
+    end
+
+    -- Community channels reach us as CHANNEL sends with a synthetic name;
+    -- re-route them through the club API so they take the community path.
+    if profile.community and chatType == "CHANNEL" then
+        local _, channelName = GetChannelName(target)
+        self:Debug("Channel name: %s", tostring(channelName))
+        local clubId, streamId = Logic.ParseCommunityChannel(channelName)
+        if clubId then
+            self:Debug("Community channel clubId=%s streamId=%s", clubId,
+                       streamId)
+            self:SendToClub(clubId, streamId, msg)
+            return
+        end
+    end
+
+    if self:ShouldAddPrefix() and self:WantsPrefixFor(chatType, target) then
+        msg = self:ApplyPrefix(msg)
+    end
+
+    return original(msg, chatType, language, target)
+end
+
+--- Route a message to the club API, going through our hook when it is
+--- installed so the prefix logic still runs.
+function addon:SendToClub(clubId, streamId, msg)
+    if self:IsHooked(C_Club, "SendMessage") then
+        self:OnClubSendMessage(clubId, streamId, msg)
+    else
+        C_Club.SendMessage(clubId, streamId, msg)
+    end
+end
+
+function addon:OnClubSendMessage(clubId, streamId, msg)
+    local original = self.hooks[C_Club].SendMessage
+    local profile = self.db and self.db.profile
+
+    self:Debug("Club send clubId=%s streamId=%s", tostring(clubId),
+               tostring(streamId))
+
+    if not profile or not profile.enable or not profile.community or
+        InCombatLockdown() then
+        return original(clubId, streamId, msg)
+    end
+    if type(msg) ~= "string" then
+        return original(clubId, streamId, msg)
+    end
+    if Logic.HasIgnoredLeadingSymbol(msg, profile.ignoreLeadingSymbols) then
+        self:Debug("Ignoring due to leading symbol")
+        return original(clubId, streamId, msg)
+    end
+
+    local clubInfo = C_Club.GetClubInfo(clubId)
+    if not clubInfo then
+        self:Debug("No clubInfo for %s", tostring(clubId))
+        return original(clubId, streamId, msg)
+    end
+
+    self:Debug("Club type: %s", tostring(clubInfo.clubType))
+    local isCommunity = clubInfo.clubType == Enum.ClubType.BattleNet or
+                            clubInfo.clubType == Enum.ClubType.Character
+    if isCommunity and self:ShouldAddPrefix() then
+        msg = self:ApplyPrefix(msg)
+    end
+
+    return original(clubId, streamId, msg)
+end
+
+--------------------------------------------------------------------------------
+-- Configuration UI entry points
+--------------------------------------------------------------------------------
+
+function addon:OpenConfig()
+    local dialog = LibStub("AceConfigDialog-3.0")
+    dialog:Open("IncognitoResurrected Options")
+
+    local frame = dialog.OpenFrames["IncognitoResurrected Options"]
+    if frame and frame.frame then
+        frame.frame:SetHeight(580)
+        if frame.statustext then
+            frame.statustext:SetText(L["status_text"])
+        end
+    end
+end
+
+function addon:HandleSlashCommand(input)
+    if not input or input:trim() == "" then
+        self:OpenConfig()
+    else
+        LibStub("AceConfigCmd-3.0"):HandleCommand("inc", "IncognitoResurrected",
+                                                  input)
+    end
+end
+
+-- Entry point for the minimap addon compartment (see the .toc).
+function IncognitoResurrected_OnAddonCompartmentClick()
+    addon:OpenConfig()
+end
+
+--------------------------------------------------------------------------------
+-- Lifecycle
+--------------------------------------------------------------------------------
+
+function addon:OnInitialize()
+    self.db = LibStub("AceDB-3.0"):New("IncognitoResurrectedDB", ns.defaults,
+                                       true)
+    self.character_name = UnitName("player")
+
+    local config = LibStub("AceConfig-3.0")
+    local registry = LibStub("AceConfigRegistry-3.0")
+    local dialog = LibStub("AceConfigDialog-3.0")
+
+    config:RegisterOptionsTable("IncognitoResurrected", ns.slashOptions)
+    registry:RegisterOptionsTable("IncognitoResurrected Options", ns.options)
+    registry:RegisterOptionsTable("IncognitoResurrected Profiles",
+                                  LibStub("AceDBOptions-3.0"):GetOptionsTable(
+                                      self.db))
+
+    self.optionFrames = {
+        main = dialog:AddToBlizOptions("IncognitoResurrected Options",
+                                       "IncognitoResurrected"),
+        profiles = dialog:AddToBlizOptions("IncognitoResurrected Profiles",
+                                           L["profiles"], "IncognitoResurrected")
+    }
+
+    for _, command in ipairs(SLASH_COMMANDS) do
+        self:RegisterChatCommand(command, "HandleSlashCommand")
+    end
+
+    self:Print(format(L["loaded"], ns.version))
+
+    -- Nothing happens until a name is configured, so point first-time users at
+    -- the config rather than leaving them to wonder why the addon is silent.
+    if not self.db.global.firstRunHintShown then
+        self.db.global.firstRunHintShown = true
+        if not self.db.profile.name or self.db.profile.name == "" then
+            self:Print(L["first_run_hint"])
+        end
+    end
+end
+
+function addon:OnEnable()
+    self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnCombatStart")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd")
+    self:RegisterChatFilters()
+    self:SetupHooks()
+end
+
+function addon:OnDisable()
+    self:UnregisterChatFilters()
+    self:RemoveHooks()
+end

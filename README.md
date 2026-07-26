@@ -1,46 +1,90 @@
 
 # Incognito Resurrected
-#### Incognito adds your specified name in front of your chat messages. Incongito Resurrrected can be enabled for guild (and officer), party and raid chat messages.
+#### Incognito adds your specified name in front of your chat messages. Incognito Resurrected can be enabled for guild (and officer), party and raid chat messages.
 
 Supports modern (Retail) World of Warcraft only. Classic and other legacy versions are not supported.
+The addon ships in US English only.
 
 ## Example
 <pre><code>[Guild] [Yourchar]: Some chat message </code></pre>
 becomes  
 <pre><code>[Guild] [Yourchar]: (Yourname): Some chat message</code></pre>
 
-## Usage  
+## Usage
 
-**You can use the GUI config dialog or the slash commands /incognito or /inc
-slash options**  
-- /incognito config - Open configuration dialog
-- /incognito enable - Enable or disable adding your name to chat messages
-- /incognito name - The name that should be displayed in your chat messages
+**Open the config with the addon compartment button next to the minimap, or with
+the slash commands `/inc`, `/incognito` or `/incognitoresurrected`.**
 
-## AddOns Options
-- Enable - Enable adding your name to chat messages.
-- Name - The name that should be displayed in your chat messages
-- Guild - Add name to guild chat messages
-- Party - Add name to party chat messages
-- Raid - Add name to raid chat messages
-- LFR - Add name to LFR specific instance messsages
-- World - Add name to world chat messages, e.g., General, Trade, LocalDefense and Services  
+- `/inc` - Open the configuration dialog
+- `/inc config` - Open the configuration dialog
+- `/inc enable` - Enable or disable adding your name to chat messages
+- `/inc name <name>` - The name that should be displayed in your chat messages
+- `/inc debug` - Toggle debug output
+- `/inc help` - List the available commands
+
+## AddOn Options
+
+### General Settings
+- **Name** - The name that should be displayed in your chat messages
+- **Enable** - Enable adding your name to chat messages
+- **Hide name if it matches your character's name** - Skip the prefix when it would just repeat your character name
+- **Partial match** - Extend the above to match at the start of, anywhere in, or at the end of your character name
+- **Color name by class** - Draw the bracketed name in the sender's class color. This is display-only and does not change what you send
+- **Ignore leading symbols** - Skip the prefix for messages starting with any of these characters (after any spaces)
+- **Bracket style** - Wrap your name in `(round)`, `[square]`, `{curly}` or `<angle>` brackets
+
+### Options
+- **Guild** - Add name to guild and officer chat messages
+- **Party** - Add name to party chat messages
+- **Raid** - Add name to raid chat messages
+- **LFR** - Add name to LFR instance chat messages
+- **Instance** - Add name to instance chat messages, e.g. LFR and battlegrounds
+- **World** - Add name to world chat messages, e.g., General, Trade, LocalDefense and Services  
     (This is an all or none option, you cannot select which World Channel to enable/disable)
-- Channel - Add name to chat messages in a custom channel  
+- **Channel** - Add name to chat messages in a custom channel  
     (Use comma-separation to add multiple channels)
-- Community - Add name to chat messages in the Community channels.  
-- Debug - Enable debugging messages output. You probably don't want to enable this 
+- **Community** - Add name to chat messages in the Community channels
+- **Debug** - Enable debugging messages output. You probably don't want to enable this
 
 ## Known Issues
 
-## Features and Bugs
-If you have a feature request of find a bug please report them through the Github repository:  
-https://github.com/Tharavol/IncognitoResurrected/issues
+- Chat messages are capped at 255 characters. If your name prefix would push a
+  message past that limit, the message is sent without the prefix rather than
+  being silently truncated, and the addon tells you so.
+- The name prefix is not added while you are in combat. The client blocks any
+  call routed through an addon-replaced protected function during combat, so the
+  chat hooks are removed for the duration of each fight and reinstalled
+  afterwards.
 
-## Translations
-Translations are initially done using a translation website.  
-Please submit a ticket with updated translations if/when there is a better wording.  
-New languages are always appreciated. Please submit a ticket with those if you want to help.
+## Development
+
+The addon is split into:
+
+| File | Contents |
+| --- | --- |
+| [Logic.lua](Logic.lua) | Pure helpers with no WoW API dependency |
+| [Core.lua](Core.lua) | Addon object, saved variables, chat hooks, combat handling |
+| [Options.lua](Options.lua) | AceConfig option tables |
+| [ChatFilter.lua](ChatFilter.lua) | Class-color rendering of the prefix in chat frames |
+| [Locale_enUS.lua](Locale_enUS.lua) | All user-facing strings |
+
+Everything in `Logic.lua` is covered by the [busted](https://lunarmodules.github.io/busted/)
+suite in [Tests/](Tests/) and runs outside the game:
+
+```sh
+luarocks install luacheck
+luarocks install busted
+luacheck .
+busted
+```
+
+Both run on every push and pull request via
+[.github/workflows/ci.yml](.github/workflows/ci.yml). Pushing a `v*` tag builds
+the release zip with the [BigWigs packager](https://github.com/BigWigsMods/packager).
+
+## Features and Bugs
+If you have a feature request or find a bug please report them through the Github repository:  
+https://github.com/Tharavol/IncognitoResurrected/issues
 
 ## Credits
 Original Author: Nyyr  

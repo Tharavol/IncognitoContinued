@@ -1,0 +1,18 @@
+package-as: IncognitoResurrected
+
+# Ace3 is vendored under Libs/ so the repository can be cloned straight into
+# Interface/AddOns and run. The #@no-lib-strip@ markers in the .toc let the
+# packager still produce a nolib build for users who get Ace3 elsewhere.
+enable-nolib-creation: yes
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+license-output: LICENSE
+
+ignore:
+  - .github
+  - .busted
+  - .luacheckrc
+  - Tests

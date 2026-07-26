@@ -6,9 +6,7 @@ ignore = {"212/self"} -- implicit self args are idiomatic for Ace3 ":" methods
 -- Globals this addon itself defines
 globals = {
     "IncognitoResurrected",
-    "IsInLFR",
-    "InterfaceOptionsFrame_OpenToCategory",
-    "SlashCmdList" -- we register entries into this table
+    "IncognitoResurrected_OnAddonCompartmentClick" -- ## AddonCompartmentFunc
 }
 
 -- Ace3 loader + WoW API surface used by this addon
@@ -18,15 +16,11 @@ read_globals = {
     "UnitClass",
     "Ambiguate",
     "GetChannelName",
-    "GetDifficultyInfo",
     "GetInstanceInfo",
     "GetPlayerInfoByGUID",
     "InCombatLockdown",
     "ChatFrame_AddMessageEventFilter",
     "ChatFrame_RemoveMessageEventFilter",
-    "Settings",
-    "strtrim",
-    "strupper",
     "C_ChatInfo",
     "C_Club",
     "C_AddOns",
@@ -34,3 +28,8 @@ read_globals = {
     "CUSTOM_CLASS_COLORS",
     "RAID_CLASS_COLORS"
 }
+
+-- Logic.lua is deliberately free of the WoW API so it can run under busted.
+files["Logic.lua"] = {globals = {}, read_globals = {}}
+
+files["Tests/"] = {std = "lua51+busted", read_globals = {}}

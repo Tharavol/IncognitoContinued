@@ -1,20 +1,22 @@
 ## Interface: 110107, 110200, 120000
 ## Title: Incognito Resurrected
 ## Notes: Adds your name to chat messages
-
 ## Author: info@starlynk.net, Tharavol, Claude
-## Version: 1.6.1
+## Version: 1.7.0
+## IconTexture: Interface\Icons\Ability_Stealth
+## Category-enUS: Chat
+## X-License: GPL-3.0-or-later
+## X-Website: https://github.com/Tharavol/IncognitoResurrected
 ## SavedVariables: IncognitoResurrectedDB
 ## OptionalDeps: Ace3
+## AddonCompartmentFunc: IncognitoResurrected_OnAddonCompartmentClick
 
 #@no-lib-strip@
 embeds.xml
 #@end-no-lib-strip@
 
-IncognitoResurrected_enUS.lua
-IncognitoResurrected_deDE.lua
-IncognitoResurrected_ruRU.lua
-IncognitoResurrected_esES.lua
-
-IncognitoResurrected.lua
-
+Locale_enUS.lua
+Logic.lua
+Core.lua
+Options.lua
+ChatFilter.lua
