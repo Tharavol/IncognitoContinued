@@ -35,7 +35,7 @@ slash options**
 
 ## Features and Bugs
 If you have a feature request of find a bug please report them through the Github repository:  
-https://github.com/Starlynk1/IncognitoResurrected/issues
+https://github.com/Tharavol/IncognitoResurrected/issues
 
 ## Translations
 Translations are initially done using a translation website.  
@@ -46,5 +46,8 @@ New languages are always appreciated. Please submit a ticket with those if you w
 Original Author: Nyyr  
 Resurrected Author: Starlynk  
 Contributors: TheIceBadger, Hubbotu  
-##  
-### Version: 1.4.0
+
+This repository is a fork of [Starlynk1/IncognitoResurrected](https://github.com/Starlynk1/IncognitoResurrected),
+diverged at v1.4.6 to drop Classic/legacy WoW support and target Retail only. See
+[Credits.md](Credits.md) and [CHANGELOG.md](CHANGELOG.md) for details on what has changed
+since the fork point.

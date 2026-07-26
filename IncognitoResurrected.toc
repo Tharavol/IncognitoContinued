@@ -3,11 +3,9 @@
 ## Notes: Adds your name to chat messages
 
 ## Author: info@starlynk.net, Tharavol, Claude
-## Version: 1.5.1
+## Version: 1.6.1
 ## SavedVariables: IncognitoResurrectedDB
 ## OptionalDeps: Ace3
-
-## X-Curse-Project-ID: 961634
 
 #@no-lib-strip@
 embeds.xml

@@ -1,15 +1,22 @@
---  Version: 1.5.1
+--  Version: 1.6.1
 IncognitoResurrected = LibStub("AceAddon-3.0"):NewAddon("IncognitoResurrected",
                                                         "AceConsole-3.0",
                                                         "AceEvent-3.0",
                                                         "AceHook-3.0");
 --  Localization
 local L = LibStub("AceLocale-3.0"):GetLocale("IncognitoResurrected", true)
+local addonVersion = C_AddOns.GetAddOnMetadata("IncognitoResurrected", "Version")
 --  Main Section
 local Options = {
     name = "Incognito Resurrected",
     type = "group",
     args = {
+        version = {
+            order = -1,
+            type = "description",
+            name = "|cFF808080Version: " .. addonVersion .. "|r",
+            fontSize = "medium"
+        },
         generalSettings = {
             name = "General Settings",
             type = "group",
@@ -344,7 +351,7 @@ function IncognitoResurrected:OnInitialize()
     -- combat and restore it once combat ends.
     self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnCombatStart")
 
-    self:Safe_Print(L["Loaded"])
+    self:Print(L["Loaded"] .. " (v" .. addonVersion .. ")")
 end
 
 function IncognitoResurrected:SetupHooks()

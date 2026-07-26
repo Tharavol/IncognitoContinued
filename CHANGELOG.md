@@ -1,5 +1,13 @@
 # Incognito Resurrected
 
+## [v1.6.1](https://github.com/Tharavol/IncognitoResurrected/tree/v1.6.1) (2026-07-26)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.5.1...v1.6.1) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+- Explicitly document this repository as a fork of [Starlynk1/IncognitoResurrected](https://github.com/Starlynk1/IncognitoResurrected), diverged at v1.4.6, in README.md and Credits.md  
+- Remove upstream's `X-Curse-Project-ID` from the .toc; this fork is not published under their CurseForge listing  
+- Bump version to 1.6.x to end reuse of version numbers already used by upstream for different code. Upstream independently reused v1.4.7/v1.5.0/v1.5.1 for unrelated changes after our v1.4.6 fork point (and is at 1.5.2 on their develop branch as of this writing), so those version strings now mean different things in each repository. Future versions here will stay numerically ahead of upstream's to avoid further collisions  
+- Evaluated upstream's `ChatCompat`-based EditBox-hook rewrite (their fix attempt for the same PvP `ADDON_ACTION_FORBIDDEN` bug class we fixed in v1.5.1) and declined to adopt it: their approach still has to force-disable the raid/battleground/arena/dungeon toggles on modern Retail (interface >= 11.0.0, i.e. every version we ship) because `EditBox:SetText()` still taints in those combat-instance contexts. Our existing fix (fully unhooking `C_ChatInfo.SendChatMessage` for the duration of combat via PLAYER_REGEN_DISABLED/ENABLED) already avoids the taint without disabling any feature, so it stays  
+
 ## [v1.5.1](https://github.com/Tharavol/IncognitoResurrected/tree/v1.5.1) (2026-07-21)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.5.0...v1.5.1) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
 

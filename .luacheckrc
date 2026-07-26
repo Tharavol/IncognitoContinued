@@ -29,6 +29,7 @@ read_globals = {
     "strupper",
     "C_ChatInfo",
     "C_Club",
+    "C_AddOns",
     "Enum",
     "CUSTOM_CLASS_COLORS",
     "RAID_CLASS_COLORS"

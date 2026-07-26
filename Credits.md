@@ -7,3 +7,13 @@ Resurrected Addons are for keeping abandoned but useful addons alive for all pla
 
 Addon: Incognito
 Original Author(s): daniel@pew.cc, nyyr
+
+## Fork Notice
+
+This repository ([Tharavol/IncognitoResurrected](https://github.com/Tharavol/IncognitoResurrected))
+is a fork of [Starlynk1/IncognitoResurrected](https://github.com/Starlynk1/IncognitoResurrected)
+(the "Incognito Resurrected" addon by Starlynk, credited above), diverged at their v1.4.6
+release. This fork drops Classic/Classic Era/other legacy WoW support to target modern
+(Retail) World of Warcraft only, and continues independently under the same GNU GPLv3
+license as the upstream project. See [CHANGELOG.md](CHANGELOG.md) for the changes made
+since the fork point.
