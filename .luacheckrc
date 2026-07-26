@@ -1,5 +1,7 @@
 std = "lua51"
-exclude_files = {"Libs/**"}
+-- .luarocks/.luarocks are left behind by CI's local luarocks install; Libs/
+-- is vendored Ace3.
+exclude_files = {"Libs/**", ".luarocks/**", ".luarocks", "lua_modules/**"}
 max_line_length = false
 ignore = {"212/self"} -- implicit self args are idiomatic for Ace3 ":" methods
 
