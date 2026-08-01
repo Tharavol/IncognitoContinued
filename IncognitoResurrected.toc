@@ -2,7 +2,7 @@
 ## Title: Incognito Resurrected
 ## Notes: Adds your name to chat messages
 ## Author: info@starlynk.net, Tharavol, Claude
-## Version: 1.7.1
+## Version: @project-version@
 ## IconTexture: Interface\Icons\Ability_Stealth
 ## Category-enUS: Chat
 ## X-License: GPL-3.0-or-later
