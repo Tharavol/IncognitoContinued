@@ -1,5 +1,11 @@
 # Incognito Resurrected
 
+## [v1.7.1](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.1) (2026-08-01)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.0...v1.7.1) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+### Internal
+- Add the missing license files for the vendored libraries under `Libs/`. Ace3 and CallbackHandler-1.0 are redistributed under the Ace3 Development Team's Limited BSD license, and LibStub is public domain; both terms now ship with the source and the packaged zip, which is what those licenses require of a redistribution. Added `Libs/README.md` mapping each vendored directory to its license, and noting that none of them fall under the addon's own GPLv3
+
 ## [v1.7.0](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.0) (2026-07-26)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.6.1...v1.7.0) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
 
