@@ -1,5 +1,14 @@
 # Incognito Resurrected
 
+## [v1.7.2](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.2) (2026-08-01)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.1...v1.7.2) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+### Internal
+- The version in the TOC now comes from the release tag rather than being maintained by hand, so it can no longer disagree with the release it was published under. Versions now carry a leading `v`.
+- Bumped the CI action pins to current majors: `actions/checkout` v4 to v7, `leafo/gh-actions-lua` v10 to v13, and `leafo/gh-actions-luarocks` v4 to v6.
+
+No functional changes.
+
 ## [v1.7.1](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.1) (2026-08-01)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.0...v1.7.1) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
 
