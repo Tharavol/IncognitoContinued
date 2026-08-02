@@ -1,0 +1,23 @@
+# OS junk
+Thumbs.db
+desktop.ini
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Claude / AI tool scratch files
+.claude/
+CLAUDE.md
+*_artifact*
+scratch/
+fixes.md
+
+# Packaging output
+.release/
+*.zip
+
+# luacheck and busted are installed via luarocks (see README); depending on the
+# tree in use that lands here rather than outside the repo.
+.luarocks/
+lua_modules/
