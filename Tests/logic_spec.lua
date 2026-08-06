@@ -167,6 +167,146 @@ describe("ColorizeParsedPrefix", function()
     end)
 end)
 
+describe("ShouldAddPrefix", function()
+    it("is false with no configured name", function()
+        assert.is_false(Logic.ShouldAddPrefix({name = nil}, "Bob"))
+        assert.is_false(Logic.ShouldAddPrefix({name = ""}, "Bob"))
+    end)
+
+    it("is true once a name is set and matching is not in the way", function()
+        assert.is_true(Logic.ShouldAddPrefix({
+            name = "Shadow",
+            hideOnMatchingCharName = false
+        }, "Bob"))
+    end)
+
+    it("hides when the name matches the character under the configured mode",
+       function()
+        assert.is_false(Logic.ShouldAddPrefix({
+            name = "Bob",
+            hideOnMatchingCharName = true,
+            partialMatchMode = "disabled"
+        }, "Bob"))
+        assert.is_true(Logic.ShouldAddPrefix({
+            name = "Bob",
+            hideOnMatchingCharName = true,
+            partialMatchMode = "disabled"
+        }, "Bobbington"))
+        assert.is_false(Logic.ShouldAddPrefix({
+            name = "Bob",
+            hideOnMatchingCharName = true,
+            partialMatchMode = "start"
+        }, "Bobbington"))
+    end)
+end)
+
+describe("WantsPrefixFor", function()
+    local function profile(overrides)
+        local p = {
+            guild = false,
+            raid = false,
+            party = false,
+            instance_chat = false,
+            lfr = false,
+            world_chat = false,
+            channel = nil
+        }
+        for k, v in pairs(overrides or {}) do p[k] = v end
+        return p
+    end
+
+    it("gates GUILD and OFFICER on the guild option", function()
+        assert.is_true(Logic.WantsPrefixFor(profile({guild = true}), "GUILD"))
+        assert.is_true(
+            Logic.WantsPrefixFor(profile({guild = true}), "OFFICER"))
+        assert.is_false(Logic.WantsPrefixFor(profile(), "GUILD"))
+    end)
+
+    it("gates RAID on the raid option", function()
+        assert.is_true(Logic.WantsPrefixFor(profile({raid = true}), "RAID"))
+        assert.is_false(Logic.WantsPrefixFor(profile(), "RAID"))
+    end)
+
+    it("gates PARTY on the party option", function()
+        assert.is_true(Logic.WantsPrefixFor(profile({party = true}), "PARTY"))
+        assert.is_false(Logic.WantsPrefixFor(profile(), "PARTY"))
+    end)
+
+    describe("INSTANCE_CHAT", function()
+        it("is on whenever the instance option is enabled", function()
+            assert.is_true(Logic.WantsPrefixFor(
+                               profile({instance_chat = true}), "INSTANCE_CHAT",
+                               {isInLFR = false}))
+        end)
+
+        it("falls back to lfr + isInLFR when instance is off", function()
+            assert.is_true(Logic.WantsPrefixFor(profile({lfr = true}),
+                                                "INSTANCE_CHAT",
+                                                {isInLFR = true}))
+            assert.is_false(Logic.WantsPrefixFor(profile({lfr = true}),
+                                                 "INSTANCE_CHAT",
+                                                 {isInLFR = false}))
+            assert.is_false(
+                Logic.WantsPrefixFor(profile(), "INSTANCE_CHAT",
+                                     {isInLFR = true}))
+        end)
+    end)
+
+    describe("CHANNEL", function()
+        it("is on for every channel when world_chat is enabled", function()
+            assert.is_true(Logic.WantsPrefixFor(profile({world_chat = true}),
+                                                 "CHANNEL",
+                                                 {channelName = "Trade"}))
+        end)
+
+        it("matches against the configured channel list otherwise", function()
+            assert.is_true(Logic.WantsPrefixFor(
+                               profile({channel = "Trade,General"}), "CHANNEL",
+                               {channelName = "Trade"}))
+            assert.is_false(Logic.WantsPrefixFor(
+                                profile({channel = "Trade,General"}),
+                                "CHANNEL", {channelName = "LookingFor"}))
+        end)
+
+        it("is off with no channel list and world_chat disabled", function()
+            assert.is_false(
+                Logic.WantsPrefixFor(profile(), "CHANNEL",
+                                     {channelName = "Trade"}))
+        end)
+    end)
+
+    it("never touches chat types the addon does not support", function()
+        for _, chatType in ipairs({"WHISPER", "SAY", "YELL", "EMOTE"}) do
+            assert.is_false(Logic.WantsPrefixFor(profile({
+                guild = true,
+                raid = true,
+                party = true,
+                instance_chat = true,
+                world_chat = true
+            }), chatType, {isInLFR = true, channelName = "Trade"}), chatType)
+        end
+    end)
+
+    -- Regression (v1.7.0): the lfr branch had no chat-type guard, so an
+    -- enabled LFR option prefixed whispers, /say, /yell and emotes while
+    -- standing in an LFR raid.
+    it("does not let lfr leak into unrelated chat types while in LFR",
+       function()
+        local p = profile({lfr = true})
+        for _, chatType in ipairs({"WHISPER", "SAY", "YELL", "EMOTE"}) do
+            assert.is_false(
+                Logic.WantsPrefixFor(p, chatType, {isInLFR = true}), chatType)
+        end
+    end)
+
+    -- Regression (v1.7.0): the channel list was iterated without stopping
+    -- on the first match, so "Trade,Trade" produced a double prefix.
+    it("matches a duplicated channel list entry only once", function()
+        assert.is_true(Logic.WantsPrefixFor(profile({channel = "Trade,Trade"}),
+                                            "CHANNEL", {channelName = "Trade"}))
+    end)
+end)
+
 describe("ColorCode", function()
     it("formats 0-1 floats as a WoW color escape", function()
         assert.equal("|cff000000", Logic.ColorCode(0, 0, 0))

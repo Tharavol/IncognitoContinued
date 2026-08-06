@@ -84,39 +84,21 @@ end
 
 --- Whether the configured name should be shown at all, independent of channel.
 function addon:ShouldAddPrefix()
-    local profile = self.db.profile
-    if not profile.name or profile.name == "" then return false end
-    if profile.hideOnMatchingCharName and
-        Logic.NameMatchesCharacter(profile.name, self.character_name,
-                                   profile.partialMatchMode) then
-        return false
-    end
-    return true
+    return Logic.ShouldAddPrefix(self.db.profile, self.character_name)
 end
 
---- Whether this particular chat type is one the user opted into.
+--- Whether this particular chat type is one the user opted into. Resolves
+--- the WoW API lookups the decision needs and hands off to Logic.lua, which
+--- holds the actual chat-type matrix and is covered by the busted suite.
 function addon:WantsPrefixFor(chatType, target)
-    local profile = self.db.profile
-
-    if chatType == "GUILD" or chatType == "OFFICER" then
-        return profile.guild == true
-    elseif chatType == "RAID" then
-        return profile.raid == true
-    elseif chatType == "PARTY" then
-        return profile.party == true
-    elseif chatType == "INSTANCE_CHAT" then
-        if profile.instance_chat then return true end
-        return profile.lfr == true and IsInLFR()
+    local context = {}
+    if chatType == "INSTANCE_CHAT" then
+        context.isInLFR = IsInLFR()
     elseif chatType == "CHANNEL" then
-        if profile.world_chat then return true end
-        if profile.channel and profile.channel ~= "" then
-            local _, channelName = GetChannelName(target)
-            return Logic.ChannelListMatches(profile.channel, channelName)
-        end
-        return false
+        local _, channelName = GetChannelName(target)
+        context.channelName = channelName
     end
-
-    return false
+    return Logic.WantsPrefixFor(self.db.profile, chatType, context)
 end
 
 --------------------------------------------------------------------------------

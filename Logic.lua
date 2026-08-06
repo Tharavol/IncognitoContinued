@@ -72,6 +72,45 @@ function Logic.NameMatchesCharacter(configuredName, characterName, mode)
     return false
 end
 
+--- Whether the configured name should be shown at all, independent of channel.
+function Logic.ShouldAddPrefix(profile, characterName)
+    if not profile.name or profile.name == "" then return false end
+    if profile.hideOnMatchingCharName and
+        Logic.NameMatchesCharacter(profile.name, characterName,
+                                   profile.partialMatchMode) then
+        return false
+    end
+    return true
+end
+
+--- Whether this particular chat type is one the user opted into. `context`
+--- carries the results of the WoW API lookups Core.lua resolves for the
+--- chat type at hand: `isInLFR` for INSTANCE_CHAT, `channelName` for
+--- CHANNEL. Neither is required for chat types that don't need it.
+function Logic.WantsPrefixFor(profile, chatType, context)
+    context = context or {}
+
+    if chatType == "GUILD" or chatType == "OFFICER" then
+        return profile.guild == true
+    elseif chatType == "RAID" then
+        return profile.raid == true
+    elseif chatType == "PARTY" then
+        return profile.party == true
+    elseif chatType == "INSTANCE_CHAT" then
+        if profile.instance_chat then return true end
+        return profile.lfr == true and context.isInLFR == true
+    elseif chatType == "CHANNEL" then
+        if profile.world_chat then return true end
+        if profile.channel and profile.channel ~= "" then
+            return Logic.ChannelListMatches(profile.channel,
+                                            context.channelName)
+        end
+        return false
+    end
+
+    return false
+end
+
 --- True when `channelName` appears in the comma-separated `list`.
 --- Returns on the first hit, so duplicate entries cannot double-prefix.
 function Logic.ChannelListMatches(list, channelName)
