@@ -26,3 +26,11 @@ jobs:
 
       - name: Busted
         run: busted
+
+      - name: Package (dry run)
+        uses: BigWigsMods/packager@v2
+        with:
+          args: -d -z
+
+      - name: Verify package output
+        run: test -f .release/IncognitoResurrected/IncognitoResurrected.toc
