@@ -285,9 +285,9 @@ function addon:OnInitialize()
     -- Nothing happens until a name is configured, so point first-time users at
     -- the config rather than leaving them to wonder why the addon is silent.
     if not self.db.global.firstRunHintShown then
-        self.db.global.firstRunHintShown = true
         if not self.db.profile.name or self.db.profile.name == "" then
             self:Print(L["first_run_hint"])
+            self.db.global.firstRunHintShown = true
         end
     end
 end
