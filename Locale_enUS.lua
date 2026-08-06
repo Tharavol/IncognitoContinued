@@ -4,7 +4,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("IncognitoResurrected", "enUS",
 
 if not L then return end
 
-L["loaded"] = "Loaded (v%s)."
+L["loaded"] = "Loaded (%s)."
 L["version"] = "Version: %s"
 
 L["generalSettings"] = "General Settings"
