@@ -16,3 +16,4 @@ ignore:
   - .busted
   - .luacheckrc
   - Tests
+  - Libs/LibStub/tests
