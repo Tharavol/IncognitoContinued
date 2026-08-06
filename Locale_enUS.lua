@@ -37,7 +37,9 @@ L["instance_chat_desc"] =
 
 L["world_chat"] = "World Chat"
 L["world_chat_desc"] =
-    "Add name to world chat messages, e.g., General, Trade, LocalDefense and Services.\n-- This is an all or none option, you cannot select which World Channel to enable/disable"
+    "Add name to world chat messages, e.g., General, Trade, LocalDefense and Services."
+L["world_chat_info_text"] =
+    "This is an all or none option, you cannot select which World Channel to enable/disable"
 
 L["config"] = "Configuration"
 L["config_desc"] = "Open configuration window."

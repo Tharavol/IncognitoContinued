@@ -178,7 +178,7 @@ ns.options = {
                 world_chat_info = {
                     order = 6.5,
                     type = "description",
-                    name = "|cFFFFA500" .. L["world_chat_desc"]
+                    name = "|cFFFFA500" .. L["world_chat_info_text"]
                 },
                 channel = {
                     order = 7,
