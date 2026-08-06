@@ -1,5 +1,5 @@
 -- US English is the only locale this addon ships.
-local L = LibStub("AceLocale-3.0"):NewLocale("IncognitoResurrected", "enUS",
+local L = LibStub("AceLocale-3.0"):NewLocale("IncognitoContinued", "enUS",
                                              true)
 
 if not L then return end
@@ -57,7 +57,7 @@ L["community_desc"] = "Add name to chat messages in the Community channels."
 
 L["hideOnMatchingCharName"] = "Hide name if it matches your character's name"
 L["hideOnMatchingCharName_desc"] =
-    "If the name specified above matches your current character's name, Incognito Resurrected will not add it again if this option is checked."
+    "If the name specified above matches your current character's name, Incognito Continued will not add it again if this option is checked."
 
 L["channel_info_text"] =
     "Say channel is not an option. This is a limitation within the Blizzard API."
@@ -103,5 +103,8 @@ L["msg_too_long"] =
 L["first_run_hint"] =
     "No name configured yet, so nothing will be added to your chat. Type /inc to set one."
 
+L["old_folder_warning"] =
+    "Both Incognito and IncognitoResurrected are loaded, so this copy is disabling its own chat hooks to avoid a doubled name prefix. Delete the IncognitoResurrected folder, then re-enter your settings with /inc -- they do not carry over automatically."
+
 L["status_text"] =
-    "Incognito Resurrected | https://www.curseforge.com/wow/addons/incognito-resurrected"
+    "Incognito Continued | https://www.curseforge.com/wow/addons/incognito-resurrected"

@@ -1,9 +1,17 @@
 
-# Incognito Resurrected
-#### Incognito adds your specified name in front of your chat messages. Incognito Resurrected can be enabled for guild (and officer), party and raid chat messages.
+# Incognito Continued
+#### Incognito adds your specified name in front of your chat messages. Incognito Continued can be enabled for guild (and officer), party and raid chat messages.
 
 Supports modern (Retail) World of Warcraft only. Classic and other legacy versions are not supported.
 The addon ships in US English only.
+
+> **Upgrading from IncognitoResurrected?** As of v1.8.0 the packaged folder is
+> `Incognito` instead of `IncognitoResurrected`. WoW keys saved settings to the
+> folder name, so your configuration does not carry over automatically. Note
+> your name, enabled channels, custom channel list, bracket style,
+> partial-match mode and ignored leading symbols before updating, then
+> re-enter them once with `/inc`. Delete the old `IncognitoResurrected` folder
+> once you've moved over. (This note goes away a few releases after v1.8.0.)
 
 ## Example
 <pre><code>[Guild] [Yourchar]: Some chat message </code></pre>

@@ -1,4 +1,41 @@
-# Incognito Resurrected
+# Incognito Continued
+
+## [v1.8.0](https://github.com/Tharavol/IncognitoResurrected/tree/v1.8.0) (2026-08-06)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.4...v1.8.0) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+### Settings reset -- read before updating
+The packaged addon folder changes from `IncognitoResurrected` to `Incognito` in this release. WoW keys saved settings to the folder name, so **your configuration does not carry over** and must be re-entered once via `/inc`. Note these six values before updating, then set them again afterward:
+- Name
+- Enabled channels (Guild, Party, Raid, LFR, Instance, World)
+- Custom channel list
+- Bracket style
+- Partial-match mode
+- Ignored leading symbols
+
+If the old `IncognitoResurrected` folder is still installed when you update, the addon detects it, warns you in chat, and disables its own chat hooks so you get one name prefix instead of two while you sort it out. Delete that folder once you've moved your settings over.
+
+### Changed
+- Rename the project to Incognito Continued. The packaged folder is now `Incognito` instead of `IncognitoResurrected`
+- Register the addon internally as `IncognitoContinued`, a name distinct from the packaged folder, so the AceAddon, AceLocale, AceConfig and AceDBOptions registries never contest the same shared namespace as Nyyr's original `Incognito` addon, which installs to the same folder name
+- Guard the AceAddon registration so a name collision prints a readable chat message instead of crashing on load
+
+## [v1.7.4](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.4) (2026-08-06)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.3...v1.7.4) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+### Fixed
+- Stop rendering the World Chat "all or none" caveat twice in the options panel: once as the toggle's tooltip and again as the inline description beneath it
+- Fix the first-run hint being permanently suppressed for every character and profile on the account the first time any character that already had a name configured logged in, since the "shown" flag was global-scoped but the name is profile-scoped
+
+### Internal
+- Extract the chat-type decision logic (`WantsPrefixFor`/`ShouldAddPrefix`) out of Core.lua into pure, tested functions in Logic.lua, and add a table-driven busted suite over the chat-type matrix with explicit regressions for both v1.7.0 bugs
+- Add a packager dry-run to CI so a broken `.pkgmeta`, a TOC/folder mismatch, or a bad `ignore` entry surfaces on every push instead of only when a release tag goes out
+- Exclude `Libs/LibStub/tests` from the packaged zip
+
+## [v1.7.3](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.3) (2026-08-06)
+[Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.2...v1.7.3) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)
+
+### Fixed
+- Fix the login banner and options panel version string doubling to `vv1.7.2`. The TOC version has carried its own leading `v` since v1.7.2's release-tag-derived versioning; the `"Loaded (v%s)."` locale string was adding a second one
 
 ## [v1.7.2](https://github.com/Tharavol/IncognitoResurrected/tree/v1.7.2) (2026-08-01)
 [Full Changelog](https://github.com/Tharavol/IncognitoResurrected/compare/v1.7.1...v1.7.2) [Previous Releases](https://github.com/Tharavol/IncognitoResurrected/releases)

@@ -3,7 +3,7 @@ Options.lua - AceConfig option tables for the GUI panel and slash commands.
 ]] --
 local _, ns = ...
 
-local L = LibStub("AceLocale-3.0"):GetLocale("IncognitoResurrected", true)
+local L = LibStub("AceLocale-3.0"):GetLocale(ns.ADDON_ID, true)
 local addon = ns.addon
 
 local format = string.format
@@ -12,7 +12,7 @@ local function Get(item) return addon.db.profile[item[#item]] end
 local function Set(item, value) addon.db.profile[item[#item]] = value end
 
 ns.options = {
-    name = "Incognito Resurrected",
+    name = "Incognito Continued",
     type = "group",
     args = {
         version = {

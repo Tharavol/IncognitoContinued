@@ -1,5 +1,5 @@
 ## Interface: 110107, 110200, 120000
-## Title: Incognito Resurrected
+## Title: Incognito Continued
 ## Notes: Adds your name to chat messages
 ## Author: info@starlynk.net, Tharavol, Claude
 ## Version: @project-version@
@@ -7,9 +7,9 @@
 ## Category-enUS: Chat
 ## X-License: GPL-3.0-or-later
 ## X-Website: https://github.com/Tharavol/IncognitoResurrected
-## SavedVariables: IncognitoResurrectedDB
+## SavedVariables: IncognitoContinuedDB
 ## OptionalDeps: Ace3
-## AddonCompartmentFunc: IncognitoResurrected_OnAddonCompartmentClick
+## AddonCompartmentFunc: IncognitoContinued_OnAddonCompartmentClick
 
 #@no-lib-strip@
 embeds.xml

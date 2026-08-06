@@ -7,8 +7,8 @@ ignore = {"212/self"} -- implicit self args are idiomatic for Ace3 ":" methods
 
 -- Globals this addon itself defines
 globals = {
-    "IncognitoResurrected",
-    "IncognitoResurrected_OnAddonCompartmentClick" -- ## AddonCompartmentFunc
+    "IncognitoContinued",
+    "IncognitoContinued_OnAddonCompartmentClick" -- ## AddonCompartmentFunc
 }
 
 -- Ace3 loader + WoW API surface used by this addon
@@ -21,6 +21,7 @@ read_globals = {
     "GetInstanceInfo",
     "GetPlayerInfoByGUID",
     "InCombatLockdown",
+    "IsLoggedIn",
     "ChatFrame_AddMessageEventFilter",
     "ChatFrame_RemoveMessageEventFilter",
     "C_ChatInfo",

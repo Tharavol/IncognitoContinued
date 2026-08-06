@@ -33,4 +33,4 @@ jobs:
           args: -d -z
 
       - name: Verify package output
-        run: test -f .release/IncognitoResurrected/IncognitoResurrected.toc
+        run: test -f .release/Incognito/Incognito.toc

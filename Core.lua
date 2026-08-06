@@ -3,19 +3,32 @@ Core.lua - Addon object, saved variables, chat hooks and combat handling.
 ]] --
 local addonName, ns = ...
 
-local L = LibStub("AceLocale-3.0"):GetLocale("IncognitoResurrected", true)
+-- The packaged folder is "Incognito" (see .pkgmeta), same as Nyyr's original
+-- Incognito addon. AceAddon/AceLocale/AceConfig/AceDBOptions are all shared
+-- global registries, so this addon registers under the distinct name
+-- IncognitoContinued instead of addonName to avoid contesting them with the
+-- original.
+local ADDON_ID = "IncognitoContinued"
+ns.ADDON_ID = ADDON_ID
+
+local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_ID, true)
 local Logic = ns.Logic
 
 local format = string.format
 
 --- Global addon object. Kept as a global for backwards compatibility with
 --- macros and other addons that look it up by name.
-IncognitoResurrected = LibStub("AceAddon-3.0"):NewAddon(addonName,
-                                                        "AceConsole-3.0",
-                                                        "AceEvent-3.0",
-                                                        "AceHook-3.0")
+local AceAddon = LibStub("AceAddon-3.0")
+local ok, addonOrErr = pcall(AceAddon.NewAddon, AceAddon, ADDON_ID,
+                             "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+if not ok then
+    print(format("|cffff0000%s|r failed to load: %s", ADDON_ID,
+                 tostring(addonOrErr)))
+    return
+end
+IncognitoContinued = addonOrErr
 
-local addon = IncognitoResurrected
+local addon = IncognitoContinued
 ns.addon = addon
 ns.version = C_AddOns.GetAddOnMetadata(addonName, "Version")
 
@@ -225,9 +238,9 @@ end
 
 function addon:OpenConfig()
     local dialog = LibStub("AceConfigDialog-3.0")
-    dialog:Open("IncognitoResurrected Options")
+    dialog:Open(ADDON_ID .. " Options")
 
-    local frame = dialog.OpenFrames["IncognitoResurrected Options"]
+    local frame = dialog.OpenFrames[ADDON_ID .. " Options"]
     if frame and frame.frame then
         frame.frame:SetHeight(580)
         if frame.statustext then
@@ -240,13 +253,12 @@ function addon:HandleSlashCommand(input)
     if not input or input:trim() == "" then
         self:OpenConfig()
     else
-        LibStub("AceConfigCmd-3.0"):HandleCommand("inc", "IncognitoResurrected",
-                                                  input)
+        LibStub("AceConfigCmd-3.0"):HandleCommand("inc", ADDON_ID, input)
     end
 end
 
 -- Entry point for the minimap addon compartment (see the .toc).
-function IncognitoResurrected_OnAddonCompartmentClick()
+function IncognitoContinued_OnAddonCompartmentClick()
     addon:OpenConfig()
 end
 
@@ -255,25 +267,23 @@ end
 --------------------------------------------------------------------------------
 
 function addon:OnInitialize()
-    self.db = LibStub("AceDB-3.0"):New("IncognitoResurrectedDB", ns.defaults,
-                                       true)
+    self.db = LibStub("AceDB-3.0"):New(ADDON_ID .. "DB", ns.defaults, true)
     self.character_name = UnitName("player")
 
     local config = LibStub("AceConfig-3.0")
     local registry = LibStub("AceConfigRegistry-3.0")
     local dialog = LibStub("AceConfigDialog-3.0")
 
-    config:RegisterOptionsTable("IncognitoResurrected", ns.slashOptions)
-    registry:RegisterOptionsTable("IncognitoResurrected Options", ns.options)
-    registry:RegisterOptionsTable("IncognitoResurrected Profiles",
+    config:RegisterOptionsTable(ADDON_ID, ns.slashOptions)
+    registry:RegisterOptionsTable(ADDON_ID .. " Options", ns.options)
+    registry:RegisterOptionsTable(ADDON_ID .. " Profiles",
                                   LibStub("AceDBOptions-3.0"):GetOptionsTable(
                                       self.db))
 
     self.optionFrames = {
-        main = dialog:AddToBlizOptions("IncognitoResurrected Options",
-                                       "IncognitoResurrected"),
-        profiles = dialog:AddToBlizOptions("IncognitoResurrected Profiles",
-                                           L["profiles"], "IncognitoResurrected")
+        main = dialog:AddToBlizOptions(ADDON_ID .. " Options", ADDON_ID),
+        profiles = dialog:AddToBlizOptions(ADDON_ID .. " Profiles",
+                                           L["profiles"], ADDON_ID)
     }
 
     for _, command in ipairs(SLASH_COMMANDS) do
@@ -292,11 +302,36 @@ function addon:OnInitialize()
     end
 end
 
+-- Remove this guard two or three releases after v1.8.0, once few enough
+-- users still have the old folder installed for it to matter (see #12).
+local OLD_FOLDER_NAME = "IncognitoResurrected"
+
+--- If the pre-rename folder is still installed and loaded alongside this
+--- one, both install chat hooks and both would prefix every message. Warn
+--- and drop our own hooks in favor of the copy that's already running,
+--- rather than silently doubling the prefix.
+function addon:CheckOldFolder()
+    if not C_AddOns.IsAddOnLoaded(OLD_FOLDER_NAME) then return end
+    self:Print(L["old_folder_warning"])
+    self:RemoveHooks()
+end
+
 function addon:OnEnable()
     self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnCombatStart")
     self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd")
     self:RegisterChatFilters()
     self:SetupHooks()
+
+    -- Folder load order is alphabetical, so the old IncognitoResurrected
+    -- folder loads after this one and is not yet reflected in
+    -- IsAddOnLoaded() during our own OnEnable. Check now if login has
+    -- already completed (e.g. a manual /reload of just this addon),
+    -- otherwise wait for it.
+    if IsLoggedIn() then
+        self:CheckOldFolder()
+    else
+        self:RegisterEvent("PLAYER_LOGIN", "CheckOldFolder")
+    end
 end
 
 function addon:OnDisable()

@@ -1,4 +1,4 @@
-package-as: IncognitoResurrected
+package-as: Incognito
 
 # Ace3 is vendored under Libs/ so the repository can be cloned straight into
 # Interface/AddOns and run. The #@no-lib-strip@ markers in the .toc let the
