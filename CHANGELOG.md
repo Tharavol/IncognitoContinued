@@ -1,5 +1,11 @@
 # Incognito Continued
 
+## [v1.8.1](https://github.com/Tharavol/IncognitoContinued/tree/v1.8.1) (2026-08-07)
+[Full Changelog](https://github.com/Tharavol/IncognitoContinued/compare/v1.8.0...v1.8.1) [Previous Releases](https://github.com/Tharavol/IncognitoContinued/releases)
+
+### Fixed
+- Stop the class-color chat filter from matching any bracketed, colon-terminated message opener, not just this addon's own prefix. Messages like `(OOC): brb` or `[Raid Warning]: incoming` from other addons or users were getting class-colored too. The filter now only colors a prefix that uses your configured bracket style and has no whitespace in the name
+
 ## [v1.8.0](https://github.com/Tharavol/IncognitoContinued/tree/v1.8.0) (2026-08-06)
 [Full Changelog](https://github.com/Tharavol/IncognitoContinued/compare/v1.7.4...v1.8.0) [Previous Releases](https://github.com/Tharavol/IncognitoContinued/releases)
 
