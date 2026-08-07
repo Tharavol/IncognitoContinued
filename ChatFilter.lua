@@ -51,6 +51,9 @@ function addon:ChatPrefixColorFilter(_frame, _event, msg, author, ...)
 
     local parts = Logic.ParseBracketedPrefix(msg)
     if not parts then return false end
+    if not Logic.LooksLikeOwnPrefix(parts, profile.bracketStyle) then
+        return false
+    end
 
     local classFile = ResolveClassFile(author, ...)
     if not classFile then return false end

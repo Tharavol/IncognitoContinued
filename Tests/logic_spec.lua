@@ -153,6 +153,36 @@ describe("ParseBracketedPrefix", function()
     end)
 end)
 
+describe("LooksLikeOwnPrefix", function()
+    it("accepts a single-word name in the configured bracket style", function()
+        local parts = Logic.ParseBracketedPrefix("(Bob): hi")
+        assert.is_true(Logic.LooksLikeOwnPrefix(parts, "paren"))
+    end)
+
+    it("rejects a different bracket style", function()
+        local parts = Logic.ParseBracketedPrefix("[Bob]: hi")
+        assert.is_false(Logic.LooksLikeOwnPrefix(parts, "paren"))
+    end)
+
+    -- Regression (#7): loose matching class-colored other addons' and
+    -- users' unrelated bracketed prefixes, e.g. "(OOC): brb" in party chat
+    -- or "[Raid Warning]: incoming" from a raid-marker addon.
+    it("rejects a multi-word name regardless of bracket style", function()
+        local parts = Logic.ParseBracketedPrefix("[Raid Warning]: incoming")
+        assert.is_false(Logic.LooksLikeOwnPrefix(parts, "square"))
+    end)
+
+    it("falls back to round brackets for an unknown style", function()
+        local parts = Logic.ParseBracketedPrefix("(Bob): hi")
+        assert.is_true(Logic.LooksLikeOwnPrefix(parts, "nonsense"))
+        assert.is_true(Logic.LooksLikeOwnPrefix(parts, nil))
+    end)
+
+    it("handles a nil parts table", function()
+        assert.is_false(Logic.LooksLikeOwnPrefix(nil, "paren"))
+    end)
+end)
+
 describe("ColorizeParsedPrefix", function()
     it("colors only the name and restores the original spacing", function()
         local parts = Logic.ParseBracketedPrefix("(Bob) : hello world")

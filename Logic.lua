@@ -163,6 +163,20 @@ function Logic.ParseBracketedPrefix(msg)
     }
 end
 
+--- True when a parsed prefix could plausibly be this addon's own rather than
+--- some other addon's or user's unrelated bracketed convention (e.g. "(OOC):"
+--- or "[Raid Warning]:"): it uses the configured bracket style, and the name
+--- has no whitespace, since a real configured name is one word/token.
+--- Cosmetic-only and not airtight -- a single-word prefix in the same
+--- bracket style can still slip through -- but cuts out most false matches.
+function Logic.LooksLikeOwnPrefix(parts, bracketStyle)
+    if not parts then return false end
+    local pair = BRACKETS[bracketStyle] or BRACKETS.paren
+    if parts.open ~= pair[1] then return false end
+    if parts.name:find("%s") then return false end
+    return true
+end
+
 --- Reassemble a parsed prefix with `colorCode` applied to the name only.
 function Logic.ColorizeParsedPrefix(parts, colorCode)
     return string.format("%s%s%s%s|r%s%s:%s%s", parts.pre, parts.open,
