@@ -92,7 +92,7 @@ the release zip with the [BigWigs packager](https://github.com/BigWigsMods/packa
 
 ## Features and Bugs
 If you have a feature request or find a bug please report them through the Github repository:  
-https://github.com/Tharavol/IncognitoResurrected/issues
+https://github.com/Tharavol/IncognitoContinued/issues
 
 ## Credits
 Original Author: Nyyr  

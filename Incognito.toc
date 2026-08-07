@@ -6,7 +6,7 @@
 ## IconTexture: Interface\Icons\Ability_Stealth
 ## Category-enUS: Chat
 ## X-License: GPL-3.0-or-later
-## X-Website: https://github.com/Tharavol/IncognitoResurrected
+## X-Website: https://github.com/Tharavol/IncognitoContinued
 ## SavedVariables: IncognitoContinuedDB
 ## OptionalDeps: Ace3
 ## AddonCompartmentFunc: IncognitoContinued_OnAddonCompartmentClick

@@ -10,7 +10,7 @@ Original Author(s): daniel@pew.cc, nyyr
 
 ## Fork Notice
 
-This repository ([Tharavol/IncognitoResurrected](https://github.com/Tharavol/IncognitoResurrected))
+This repository ([Tharavol/IncognitoContinued](https://github.com/Tharavol/IncognitoContinued))
 is a fork of [Starlynk1/IncognitoResurrected](https://github.com/Starlynk1/IncognitoResurrected)
 (the "Incognito Resurrected" addon by Starlynk, credited above), diverged at their v1.4.6
 release. This fork drops Classic/Classic Era/other legacy WoW support to target modern
