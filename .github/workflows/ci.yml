@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Needed so "Check for pending tag" below can see tags, not just HEAD.
+          fetch-depth: 0
 
       - uses: leafo/gh-actions-lua@v13
         with:
@@ -27,10 +30,21 @@ jobs:
       - name: Busted
         run: busted
 
+      # If this push also carries a tag on HEAD (e.g. a release commit pushed
+      # together with its tag), BigWigsMods/packager intentionally no-ops on
+      # the branch push to avoid a duplicate build, leaving no zip behind.
+      # Detect that ourselves so the later steps skip deterministically
+      # instead of racing the tag ref and failing when they lose.
+      - name: Check for pending tag
+        id: check_tag
+        run: echo "tag=$(git tag --points-at HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Package (dry run)
+        if: steps.check_tag.outputs.tag == ''
         uses: BigWigsMods/packager@v2
         with:
           args: -d -z
 
       - name: Verify package output
+        if: steps.check_tag.outputs.tag == ''
         run: test -f .release/Incognito/Incognito.toc
