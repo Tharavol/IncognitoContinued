@@ -37,7 +37,7 @@ L["instance_chat_desc"] =
 
 L["world_chat"] = "World Chat"
 L["world_chat_desc"] =
-    "Add name to world chat messages, e.g., General, Trade, LocalDefense and Services."
+    "Add name to world chat messages, e.g., General, Trade, Local Defense and Services."
 L["world_chat_info_text"] =
     "This is an all or none option, you cannot select which World Channel to enable/disable"
 
@@ -60,9 +60,9 @@ L["hideOnMatchingCharName_desc"] =
     "If the name specified above matches your current character's name, Incognito Continued will not add it again if this option is checked."
 
 L["channel_info_text"] =
-    "Say channel is not an option. This is a limitation within the Blizzard API."
+    "The Say channel is not an option; this is a limitation of the Blizzard API."
 L["community_info_text"] =
-    "Currently this is an all or nothing option for community channels."
+    "This is an all or none option, you cannot select which Community to enable/disable."
 
 L["ignoreLeadingSymbols"] = "Ignore leading symbols"
 L["ignoreLeadingSymbols_desc"] =
@@ -97,6 +97,9 @@ L["help_help"] = "/inc help - Show this help"
 L["help"] = "Help"
 L["help_desc"] = "Show available commands"
 
+L["on"] = "ON"
+L["off"] = "OFF"
+
 L["msg_too_long"] =
     "Message too long to fit your name prefix; sent without it."
 
@@ -106,5 +109,4 @@ L["first_run_hint"] =
 L["old_folder_warning"] =
     "Both Incognito and IncognitoResurrected are loaded, so this copy is disabling its own chat hooks to avoid a doubled name prefix. Delete the IncognitoResurrected folder, then re-enter your settings with /inc -- they do not carry over automatically."
 
-L["status_text"] =
-    "Incognito Continued | https://www.curseforge.com/wow/addons/incognito-resurrected"
+L["status_text"] = "Incognito Continued | https://github.com/Tharavol/IncognitoContinued"

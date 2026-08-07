@@ -235,7 +235,7 @@ ns.slashOptions = {
             type = "toggle",
             set = function(_item, value)
                 addon.db.profile.debug = value
-                addon:Print(L["debug"] .. ": " .. (value and "ON" or "OFF"))
+                addon:Print(L["debug"] .. ": " .. (value and L["on"] or L["off"]))
             end
         },
         help = {

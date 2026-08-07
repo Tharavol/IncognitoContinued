@@ -1,5 +1,15 @@
 # Incognito Continued
 
+## [v1.8.2](https://github.com/Tharavol/IncognitoContinued/tree/v1.8.2) (2026-08-07)
+[Full Changelog](https://github.com/Tharavol/IncognitoContinued/compare/v1.8.1...v1.8.2) [Previous Releases](https://github.com/Tharavol/IncognitoContinued/releases)
+
+### Changed
+- Fix a missing space in the World Chat description ("LocalDefense" -> "Local Defense")
+- Unify the "all or none" wording between the World Chat and Community option descriptions
+- Tighten the grammar of the Say-channel limitation note
+- Route the `/inc debug` on/off confirmation through the locale table instead of hardcoding "ON"/"OFF"
+- Point the options panel's status line at the GitHub repository instead of the old CurseForge listing
+
 ## [v1.8.1](https://github.com/Tharavol/IncognitoContinued/tree/v1.8.1) (2026-08-07)
 [Full Changelog](https://github.com/Tharavol/IncognitoContinued/compare/v1.8.0...v1.8.1) [Previous Releases](https://github.com/Tharavol/IncognitoContinued/releases)
 
